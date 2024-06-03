@@ -1,0 +1,56 @@
+import java.util.concurrent.*;
+
+public class ThreadPoolExample {
+
+    public static void main(String[] args) {
+        // Step 1: Create a fixed-size thread pool
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+
+        // Step 2: Define tasks
+        Runnable task1 = () -> {
+            performComplexCalculation(1);
+        };
+
+        Runnable task2 = () -> {
+            performComplexCalculation(2);
+        };
+
+        Runnable task3 = () -> {
+            performComplexCalculation(3);
+        };
+
+        Runnable task4 = () -> {
+            performComplexCalculation(4);
+        };
+
+        // Step 3: Submit tasks to the thread pool
+        executor.submit(task1);
+        executor.submit(task2);
+        executor.submit(task3);
+        executor.submit(task4);
+
+        // Step 4: Shutdown the executor
+        executor.shutdown();
+        
+        try {
+            if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
+                executor.shutdownNow();
+            }
+        } catch (InterruptedException ex) {
+            executor.shutdownNow();
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    // Example method to simulate a complex calculation
+    public static void performComplexCalculation(int taskId) {
+        System.out.println("Task " + taskId + " is starting.");
+        try {
+            // Simulate a complex calculation or I/O operation
+            Thread.sleep((long) (Math.random() * 10000));
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        System.out.println("Task " + taskId + " is completed.");
+    }
+}
