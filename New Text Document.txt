@@ -1,64 +1,38 @@
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
-public class PrimeNumberCalculator {
-
+public class Main {
     public static void main(String[] args) {
-        int maxNumber = 1000;
-        int numThreads = 4;
+        // Thread-safe Counter demonstration
+        Counter counter = new Counter();
 
-        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
-        ConcurrentHashMap<Integer, Boolean> primeMap = new ConcurrentHashMap<>();
+        Runnable incrementTask = () -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        };
 
-        List<CompletableFuture<Void>> futures = new ArrayList<>();
+        Runnable decrementTask = () -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.decrement();
+            }
+        };
 
-        for (int i = 2; i <= maxNumber; i++) {
-            final int num = i;
-            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
-                if (isPrime(num)) {
-                    primeMap.put(num, true);
-                }
-            }, executor);
-            futures.add(future);
+        ExecutorService executor = Executors.newFixedThreadPool(4);
+        executor.execute(incrementTask);
+        executor.execute(decrementTask);
+        executor.execute(incrementTask);
+        executor.execute(decrementTask);
+
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+            // Wait for all tasks to finish
         }
 
-        CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
+        System.out.println("Final counter value: " + counter.getCount());
 
-        allFutures.thenRunAsync(() -> {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("primes.txt"))) {
-                for (Integer prime : primeMap.keySet()) {
-                    writer.write(prime + "\n");
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).thenRunAsync(() -> {
-            executor.shutdown();
-            try {
-                executor.awaitTermination(10, TimeUnit.SECONDS);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }).join();
-    }
-
-    private static boolean isPrime(int num) {
-        if (num <= 1) return false;
-        if (num <= 3) return true;
-        if (num % 2 == 0 || num % 3 == 0) return false;
-
-        for (int i = 5; i * i <= num; i += 6) {
-            if (num % i == 0 || num % (i + 2) == 0)
-                return false;
-        }
-        return true;
+        // Immutable object demonstration
+        ImmutableData immutableData = new ImmutableData(42);
+        System.out.println("Immutable data value: " + immutableData.getValue());
     }
 }
