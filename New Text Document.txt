@@ -1,81 +1,64 @@
-[4:58 PM, 6/3/2024] Mohana Bangalan 🤍: import java.util.ArrayList;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Callable;
-
-public class PrimeCalculatorTask implements Callable<List<Integer>> {
-    private final int start;
-    private final int end;
-
-    public PrimeCalculatorTask(int start, int end) {
-        this.start = start;
-        this.end = end;
-    }
-
-    @Override
-    public List<Integer> call() {
-        List<Integer> primes = new ArrayList<>();
-        for (int i = start; i <= end; i++) {
-            if (isPrime(i)) {
-                primes.add(i);
-            }
-        }
-        return primes;
-    }
-
-    private boolean isPrime(int number) {
-        if (number <= 1) {
-            return false;
-        }
-        for (int i = 2; i <= Math.sqrt(number); i++) {
-            if (number % i == 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-}
-[4:58 PM, 6/3/2024] Mohana Bangalan 🤍: import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
-public class PrimeCalculator {
-    private static final int NUM_THREADS = 4;
+public class PrimeNumberCalculator {
 
-    public static void main(String[] args) throws Exception {
-        int maxNumber = 100000;
-        ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
+    public static void main(String[] args) {
+        int maxNumber = 1000;
+        int numThreads = 4;
 
-        int chunkSize = maxNumber / NUM_THREADS;
-        List<Future<List<Integer>>> futures = new ArrayList<>();
+        ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+        ConcurrentHashMap<Integer, Boolean> primeMap = new ConcurrentHashMap<>();
 
-        for (int i = 0; i < NUM_THREADS; i++) {
-            int start = i * chunkSize + 1;
-            int end = (i == NUM_THREADS - 1) ? maxNumber : (i + 1) * chunkSize;
-            futures.add(executorService.submit(new PrimeCalculatorTask(start, end)));
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+
+        for (int i = 2; i <= maxNumber; i++) {
+            final int num = i;
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                if (isPrime(num)) {
+                    primeMap.put(num, true);
+                }
+            }, executor);
+            futures.add(future);
         }
 
-        List<Integer> allPrimes = new ArrayList<>();
-        for (Future<List<Integer>> future : futures) {
-            allPrimes.addAll(future.get());
-        }
+        CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
 
-        executorService.shutdown();
-
-        // Write the results to a file asynchronously
-        writePrimesToFileAsync(allPrimes);
-    }
-
-    private static void writePrimesToFileAsync(List<Integer> primes) {
-        CompletableFuture.runAsync(() -> {
-            try {
-                java.nio.file.Files.write(java.nio.file.Paths.get("primes.txt"),
-                        (Iterable<String>) primes.stream().map(String::valueOf)::iterator);
-                System.out.println("Primes written to file successfully.");
-            } catch (Exception e) {
+        allFutures.thenRunAsync(() -> {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("primes.txt"))) {
+                for (Integer prime : primeMap.keySet()) {
+                    writer.write(prime + "\n");
+                }
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-        });
+        }).thenRunAsync(() -> {
+            executor.shutdown();
+            try {
+                executor.awaitTermination(10, TimeUnit.SECONDS);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }).join();
+    }
+
+    private static boolean isPrime(int num) {
+        if (num <= 1) return false;
+        if (num <= 3) return true;
+        if (num % 2 == 0 || num % 3 == 0) return false;
+
+        for (int i = 5; i * i <= num; i += 6) {
+            if (num % i == 0 || num % (i + 2) == 0)
+                return false;
+        }
+        return true;
     }
 }
