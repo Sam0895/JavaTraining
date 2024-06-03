@@ -1,56 +1,81 @@
-import java.util.concurrent.*;
+[4:58 PM, 6/3/2024] Mohana Bangalan 🤍: import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Callable;
 
-public class ThreadPoolExample {
+public class PrimeCalculatorTask implements Callable<List<Integer>> {
+    private final int start;
+    private final int end;
 
-    public static void main(String[] args) {
-        // Step 1: Create a fixed-size thread pool
-        ExecutorService executor = Executors.newFixedThreadPool(4);
-
-        // Step 2: Define tasks
-        Runnable task1 = () -> {
-            performComplexCalculation(1);
-        };
-
-        Runnable task2 = () -> {
-            performComplexCalculation(2);
-        };
-
-        Runnable task3 = () -> {
-            performComplexCalculation(3);
-        };
-
-        Runnable task4 = () -> {
-            performComplexCalculation(4);
-        };
-
-        // Step 3: Submit tasks to the thread pool
-        executor.submit(task1);
-        executor.submit(task2);
-        executor.submit(task3);
-        executor.submit(task4);
-
-        // Step 4: Shutdown the executor
-        executor.shutdown();
-        
-        try {
-            if (!executor.awaitTermination(60, TimeUnit.SECONDS)) {
-                executor.shutdownNow();
-            }
-        } catch (InterruptedException ex) {
-            executor.shutdownNow();
-            Thread.currentThread().interrupt();
-        }
+    public PrimeCalculatorTask(int start, int end) {
+        this.start = start;
+        this.end = end;
     }
 
-    // Example method to simulate a complex calculation
-    public static void performComplexCalculation(int taskId) {
-        System.out.println("Task " + taskId + " is starting.");
-        try {
-            // Simulate a complex calculation or I/O operation
-            Thread.sleep((long) (Math.random() * 10000));
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
+    @Override
+    public List<Integer> call() {
+        List<Integer> primes = new ArrayList<>();
+        for (int i = start; i <= end; i++) {
+            if (isPrime(i)) {
+                primes.add(i);
+            }
         }
-        System.out.println("Task " + taskId + " is completed.");
+        return primes;
+    }
+
+    private boolean isPrime(int number) {
+        if (number <= 1) {
+            return false;
+        }
+        for (int i = 2; i <= Math.sqrt(number); i++) {
+            if (number % i == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+}
+[4:58 PM, 6/3/2024] Mohana Bangalan 🤍: import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+public class PrimeCalculator {
+    private static final int NUM_THREADS = 4;
+
+    public static void main(String[] args) throws Exception {
+        int maxNumber = 100000;
+        ExecutorService executorService = Executors.newFixedThreadPool(NUM_THREADS);
+
+        int chunkSize = maxNumber / NUM_THREADS;
+        List<Future<List<Integer>>> futures = new ArrayList<>();
+
+        for (int i = 0; i < NUM_THREADS; i++) {
+            int start = i * chunkSize + 1;
+            int end = (i == NUM_THREADS - 1) ? maxNumber : (i + 1) * chunkSize;
+            futures.add(executorService.submit(new PrimeCalculatorTask(start, end)));
+        }
+
+        List<Integer> allPrimes = new ArrayList<>();
+        for (Future<List<Integer>> future : futures) {
+            allPrimes.addAll(future.get());
+        }
+
+        executorService.shutdown();
+
+        // Write the results to a file asynchronously
+        writePrimesToFileAsync(allPrimes);
+    }
+
+    private static void writePrimesToFileAsync(List<Integer> primes) {
+        CompletableFuture.runAsync(() -> {
+            try {
+                java.nio.file.Files.write(java.nio.file.Paths.get("primes.txt"),
+                        (Iterable<String>) primes.stream().map(String::valueOf)::iterator);
+                System.out.println("Primes written to file successfully.");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
     }
 }
