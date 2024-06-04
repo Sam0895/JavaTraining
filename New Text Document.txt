@@ -1,23 +1,3 @@
-[12:04 PM, 6/4/2024] Rahul wilp: package reflactionApi;
-
-public class Person {
-    private String name;
-    private int age;
-
-    public Person(String name, int age) {
-        this.name = name;
-        this.age = age;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-}
-[12:05 PM, 6/4/2024] Rahul wilp: package reflactionApi;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -39,69 +19,25 @@ public class Task3 {
         }
         System.out.println("\nConstructors:");
         Constructor<?>[] constructors = clazz.getDeclaredConstructors();
-        for …
-[12:05 PM, 6/4/2024] Rahul wilp: package reflactionApi;
-
-import java.util.*;
-
-class Task4 {
-    public static void main(String[] args) {
-        List<Person> people = new ArrayList<Person>();
-        people.add(new Person("Alice", 30));
-        people.add(new Person("Bob", 25));
-        people.add(new Person("Charlie", 35));
-        Comparator<Person> byAge = new Comparator<Person>() {
-			public int compare(Person person1, Person person2) {
-				return person1.getAge() - person2.getAge();
-			}
-		};
-        Collections.sort(people, byAge);
-        System.out.println("Sorted list of people by age:");
-        for (Person person : people) {
-            System.out.println(person.getName() + " - " + person.getAge());
+        for (Constructor<?> constructor : constructors) {
+            System.out.println(constructor.getName());
         }
+        Field privateField = clazz.getDeclaredField("privateField");
+        privateField.setAccessible(true); // Override access control
+        MyClass instance = new MyClass();
+        privateField.set(instance, "New value");
+        System.out.println("\nModified private field value: " + instance.getPrivateField());
     }
 }
-[12:06 PM, 6/4/2024] Rahul wilp: package reflactionApi;
 
-import java.util.function.*;
+class MyClass {
+    private String privateField;
 
-public class Task5 {
-    public static void main(String[] args) {
-        Person person = new Person("John", 30);
-        Predicate<Person> isAdult = new Predicate<Person>() {
-			public boolean test(Person p) {
-				return p.getAge() >= 18;
-			}
-		};
-        final Function<Person, String> personToString = new Function<Person, String>() {
-			public String apply(Person p) {
-				return "Name: " + p.getName() + ", Age: " + p.getAge();
-			}
-		};
-        Consumer<Person> printPersonDetails = new Consumer<Person>() {
-			public void accept(Person p) {
-				System.out.println("Person Details: " + personToString.apply(p));
-			}
-		};
-        Supplier<Person> createPerson = new Supplier<Person>() {
-			public Person get() {
-				return new Person("Alice", 25);
-			}
-		};
-        operateOnPerson(person, isAdult, printPersonDetails, createPerson);
+    public MyClass() {
+        this.privateField = "Initial value";
     }
-    public static void operateOnPerson(Person person,
-                                       Predicate<Person> predicate,
-                                       Consumer<Person> consumer,
-                                       Supplier<Person> supplier) {
-        if (predicate.test(person)) {
-            System.out.println("The person is an adult.");
-        } else {
-            System.out.println("The person is not an adult.");
-        }
-        consumer.accept(person);
-        Person newPerson = supplier.get();
-        System.out.println("New person created: " + newPerson.getName() + ", " + newPerson.getAge());
+
+    public String getPrivateField() {
+        return privateField;
     }
 }
