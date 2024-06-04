@@ -1,38 +1,34 @@
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+public class SwapElements {
 
-public class Main {
-    public static void main(String[] args) {
-        // Thread-safe Counter demonstration
-        Counter counter = new Counter();
-
-        Runnable incrementTask = () -> {
-            for (int i = 0; i < 1000; i++) {
-                counter.increment();
-            }
-        };
-
-        Runnable decrementTask = () -> {
-            for (int i = 0; i < 1000; i++) {
-                counter.decrement();
-            }
-        };
-
-        ExecutorService executor = Executors.newFixedThreadPool(4);
-        executor.execute(incrementTask);
-        executor.execute(decrementTask);
-        executor.execute(incrementTask);
-        executor.execute(decrementTask);
-
-        executor.shutdown();
-        while (!executor.isTerminated()) {
-            // Wait for all tasks to finish
+    // Generic method to swap elements in an array
+    public static <T> void swap(T[] array, int index1, int index2) {
+        if (index1 < 0 || index1 >= array.length || index2 < 0 || index2 >= array.length) {
+            System.out.println("Invalid indices");
+            return;
         }
 
-        System.out.println("Final counter value: " + counter.getCount());
+        T temp = array[index1];
+        array[index1] = array[index2];
+        array[index2] = temp;
+    }
 
-        // Immutable object demonstration
-        ImmutableData immutableData = new ImmutableData(42);
-        System.out.println("Immutable data value: " + immutableData.getValue());
+    public static void main(String[] args) {
+        // Integer array
+        Integer[] intArray = {1, 2, 3, 4, 5};
+        System.out.println("Original Integer Array: " + java.util.Arrays.toString(intArray));
+        swap(intArray, 1, 3);
+        System.out.println("Array after swapping elements at indices 1 and 3: " + java.util.Arrays.toString(intArray));
+
+        // String array
+        String[] strArray = {"apple", "banana", "orange", "grape"};
+        System.out.println("Original String Array: " + java.util.Arrays.toString(strArray));
+        swap(strArray, 0, 2);
+        System.out.println("Array after swapping elements at indices 0 and 2: " + java.util.Arrays.toString(strArray));
+
+        // Double array
+        Double[] doubleArray = {1.5, 2.5, 3.5, 4.5};
+        System.out.println("Original Double Array: " + java.util.Arrays.toString(doubleArray));
+        swap(doubleArray, 1, 3);
+        System.out.println("Array after swapping elements at indices 1 and 3: " + java.util.Arrays.toString(doubleArray));
     }
 }
