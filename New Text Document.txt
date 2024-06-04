@@ -1,8 +1,8 @@
-[11:42 AM, 6/4/2024] Mohana Bangalan 🤍: public class Person {
+[12:04 PM, 6/4/2024] Rahul wilp: package reflactionApi;
+
+public class Person {
     private String name;
     private int age;
-
-    // Constructors, getters, and setters
 
     public Person(String name, int age) {
         this.name = name;
@@ -13,60 +13,95 @@
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public int getAge() {
         return age;
     }
+}
+[12:05 PM, 6/4/2024] Rahul wilp: package reflactionApi;
 
-    public void setAge(int age) {
-        this.age = age;
-    }
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Constructor;
 
-    @Override
-    public String toString() {
-        return "Person{name='" + name + "', age=" + age + '}';
+public class Task3 {
+
+    public static void main(String[] args) throws Exception {
+        Class<?> clazz = MyClass.class;
+        System.out.println("Methods:");
+        Method[] methods = clazz.getDeclaredMethods();
+        for (Method method : methods) {
+            System.out.println(method.getName());
+        }
+        System.out.println("\nFields:");
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
+            System.out.println(field.getName());
+        }
+        System.out.println("\nConstructors:");
+        Constructor<?>[] constructors = clazz.getDeclaredConstructors();
+        for …
+[12:05 PM, 6/4/2024] Rahul wilp: package reflactionApi;
+
+import java.util.*;
+
+class Task4 {
+    public static void main(String[] args) {
+        List<Person> people = new ArrayList<Person>();
+        people.add(new Person("Alice", 30));
+        people.add(new Person("Bob", 25));
+        people.add(new Person("Charlie", 35));
+        Comparator<Person> byAge = new Comparator<Person>() {
+			public int compare(Person person1, Person person2) {
+				return person1.getAge() - person2.getAge();
+			}
+		};
+        Collections.sort(people, byAge);
+        System.out.println("Sorted list of people by age:");
+        for (Person person : people) {
+            System.out.println(person.getName() + " - " + person.getAge());
+        }
     }
 }
-[11:42 AM, 6/4/2024] Mohana Bangalan 🤍: import java.util.function.Predicate;
-import java.util.function.Function;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+[12:06 PM, 6/4/2024] Rahul wilp: package reflactionApi;
 
-public class PersonUtils {
+import java.util.function.*;
 
-    public static void operateOnPerson(Person person, 
-                                       Predicate<Person> predicate, 
-                                       Function<Person, String> function, 
-                                       Consumer<Person> consumer, 
-                                       Supplier<Person> supplier) {
-        // Predicate: Test the person
-        boolean testResult = predicate.test(person);
-        System.out.println("Predicate test result: " + testResult);
-
-        // Function: Apply a function to the person and get a result
-        String functionResult = function.apply(person);
-        System.out.println("Function result: " + functionResult);
-
-        // Consumer: Perform an operation on the person
-        consumer.accept(person);
-        System.out.println("Consumer operation completed. Updated person: " + person);
-
-        // Supplier: Get a new person
-        Person newPerson = supplier.get();
-        System.out.println("Supplier provided a new person: " + newPerson);
-    }
-
+public class Task5 {
     public static void main(String[] args) {
-        Person person = new Person("Alice", 30);
-
-        Predicate<Person> isAdult = p -> p.getAge() >= 18;
-        Function<Person, String> getName = Person::getName;
-        Consumer<Person> celebrateBirthday = p -> p.setAge(p.getAge() + 1);
-        Supplier<Person> newPersonSupplier = () -> new Person("Bob", 25);
-
-        operateOnPerson(person, isAdult, getName, celebrateBirthday, newPersonSupplier);
+        Person person = new Person("John", 30);
+        Predicate<Person> isAdult = new Predicate<Person>() {
+			public boolean test(Person p) {
+				return p.getAge() >= 18;
+			}
+		};
+        final Function<Person, String> personToString = new Function<Person, String>() {
+			public String apply(Person p) {
+				return "Name: " + p.getName() + ", Age: " + p.getAge();
+			}
+		};
+        Consumer<Person> printPersonDetails = new Consumer<Person>() {
+			public void accept(Person p) {
+				System.out.println("Person Details: " + personToString.apply(p));
+			}
+		};
+        Supplier<Person> createPerson = new Supplier<Person>() {
+			public Person get() {
+				return new Person("Alice", 25);
+			}
+		};
+        operateOnPerson(person, isAdult, printPersonDetails, createPerson);
+    }
+    public static void operateOnPerson(Person person,
+                                       Predicate<Person> predicate,
+                                       Consumer<Person> consumer,
+                                       Supplier<Person> supplier) {
+        if (predicate.test(person)) {
+            System.out.println("The person is an adult.");
+        } else {
+            System.out.println("The person is not an adult.");
+        }
+        consumer.accept(person);
+        Person newPerson = supplier.get();
+        System.out.println("New person created: " + newPerson.getName() + ", " + newPerson.getAge());
     }
 }
