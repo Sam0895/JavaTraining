@@ -1,11 +1,8 @@
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
-class Person {
+[11:42 AM, 6/4/2024] Mohana Bangalan 🤍: public class Person {
     private String name;
     private int age;
+
+    // Constructors, getters, and setters
 
     public Person(String name, int age) {
         this.name = name;
@@ -16,32 +13,60 @@ class Person {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public int getAge() {
         return age;
     }
 
+    public void setAge(int age) {
+        this.age = age;
+    }
+
     @Override
     public String toString() {
-        return name + " (" + age + ")";
+        return "Person{name='" + name + "', age=" + age + '}';
     }
 }
+[11:42 AM, 6/4/2024] Mohana Bangalan 🤍: import java.util.function.Predicate;
+import java.util.function.Function;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-public class Main {
+public class PersonUtils {
+
+    public static void operateOnPerson(Person person, 
+                                       Predicate<Person> predicate, 
+                                       Function<Person, String> function, 
+                                       Consumer<Person> consumer, 
+                                       Supplier<Person> supplier) {
+        // Predicate: Test the person
+        boolean testResult = predicate.test(person);
+        System.out.println("Predicate test result: " + testResult);
+
+        // Function: Apply a function to the person and get a result
+        String functionResult = function.apply(person);
+        System.out.println("Function result: " + functionResult);
+
+        // Consumer: Perform an operation on the person
+        consumer.accept(person);
+        System.out.println("Consumer operation completed. Updated person: " + person);
+
+        // Supplier: Get a new person
+        Person newPerson = supplier.get();
+        System.out.println("Supplier provided a new person: " + newPerson);
+    }
+
     public static void main(String[] args) {
-        List<Person> people = new ArrayList<>();
-        people.add(new Person("Alice", 30));
-        people.add(new Person("Bob", 25));
-        people.add(new Person("Charlie", 35));
+        Person person = new Person("Alice", 30);
 
-        // Sorting the list using a lambda expression
-        Collections.sort(people, (p1, p2) -> Integer.compare(p1.getAge(), p2.getAge()));
+        Predicate<Person> isAdult = p -> p.getAge() >= 18;
+        Function<Person, String> getName = Person::getName;
+        Consumer<Person> celebrateBirthday = p -> p.setAge(p.getAge() + 1);
+        Supplier<Person> newPersonSupplier = () -> new Person("Bob", 25);
 
-        // Alternatively, you can use Comparator.comparing
-        // people.sort(Comparator.comparingInt(Person::getAge));
-
-        // Print sorted list
-        for (Person person : people) {
-            System.out.println(person);
-        }
+        operateOnPerson(person, isAdult, getName, celebrateBirthday, newPersonSupplier);
     }
 }
