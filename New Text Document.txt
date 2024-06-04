@@ -1,34 +1,83 @@
-public class SwapElements {
+[10:47 AM, 6/4/2024] Mohana Bangalan 🤍: import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 
-    // Generic method to swap elements in an array
-    public static <T> void swap(T[] array, int index1, int index2) {
-        if (index1 < 0 || index1 >= array.length || index2 < 0 || index2 >= array.length) {
-            System.out.println("Invalid indices");
-            return;
+public class ReflectionExample {
+    public static void main(String[] args) {
+        try {
+            // Get the Class object associated with Person
+            Class<?> personClass = Class.forName("Person");
+
+            // Inspect constructors
+            Constructor<?>[] constructors = personClass.getDeclaredConstructors();
+            System.out.println("Constructors:");
+            for (Constructor<?> constructor : constructors) {
+                System.out.println(" " + constructor);
+            }
+
+            // Inspect methods
+            Method[] methods = personClass.getDeclaredMethods();
+            System.out.println("Methods:");
+            for (Method method : methods) {
+                System.out.println(" " + method);
+            }
+
+            // Inspect fields
+            Field[] fields = personClass.getDeclaredFields();
+            System.out.println("Fields:");
+            for (Field field : fields) {
+                System.out.println(" " + field);
+            }
+
+            // Create an instance of Person using the parameterized constructor
+            Constructor<?> constructor = personClass.getConstructor(String.class, int.class);
+            Object personInstance = constructor.newInstance("John Doe", 30);
+
+            // Display person info before modification
+            Method displayInfoMethod = personClass.getMethod("displayInfo");
+            displayInfoMethod.invoke(personInstance);
+
+            // Modify the private field 'name' using reflection
+            Field nameField = personClass.getDeclaredField("name");
+            nameField.setAccessible(true);  // Make the private field accessible
+            nameField.set(personInstance, "Jane Doe");
+
+            // Display person info after modification
+            displayInfoMethod.invoke(personInstance);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+    }
+}
+[10:47 AM, 6/4/2024] Mohana Bangalan 🤍: public class Person {
+    private String name;
+    private int age;
 
-        T temp = array[index1];
-        array[index1] = array[index2];
-        array[index2] = temp;
+    // Default constructor
+    public Person() {
+        this.name = "Unknown";
+        this.age = 0;
     }
 
-    public static void main(String[] args) {
-        // Integer array
-        Integer[] intArray = {1, 2, 3, 4, 5};
-        System.out.println("Original Integer Array: " + java.util.Arrays.toString(intArray));
-        swap(intArray, 1, 3);
-        System.out.println("Array after swapping elements at indices 1 and 3: " + java.util.Arrays.toString(intArray));
+    // Parameterized constructor
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
 
-        // String array
-        String[] strArray = {"apple", "banana", "orange", "grape"};
-        System.out.println("Original String Array: " + java.util.Arrays.toString(strArray));
-        swap(strArray, 0, 2);
-        System.out.println("Array after swapping elements at indices 0 and 2: " + java.util.Arrays.toString(strArray));
+    // Getter for name
+    public String getName() {
+        return name;
+    }
 
-        // Double array
-        Double[] doubleArray = {1.5, 2.5, 3.5, 4.5};
-        System.out.println("Original Double Array: " + java.util.Arrays.toString(doubleArray));
-        swap(doubleArray, 1, 3);
-        System.out.println("Array after swapping elements at indices 1 and 3: " + java.util.Arrays.toString(doubleArray));
+    // Getter for age
+    public int getAge() {
+        return age;
+    }
+
+    // Method to display person information
+    public void displayInfo() {
+        System.out.println("Name: " + name + ", Age: " + age);
     }
 }
