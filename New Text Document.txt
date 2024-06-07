@@ -1,133 +1,53 @@
-[3:51 PM, 6/7/2024] Mohana Bangalan 🤍:   @Test
-    public void testMultiply() {
-        assertEquals(6, mathOperations.multiply(2, 3));
-        assertEquals(-6, mathOperations.multiply(2, -3));
-        assertEquals(0, mathOperations.multiply(2, 0));
-    }
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
-    @Test
-    public void testDivide() {
-        assertEquals(2, mathOperations.divide(6, 3));
-        assertEquals(-2, mathOperations.divide(6, -3));
-        
-        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
-            mathOperations.divide(1, 0);
-        });
-        assertEquals("Division by zero is not allowed.", exception.getMessage());
-    }
-}
-[3:51 PM, 6/7/2024] Mohana Bangalan 🤍: import org.junit.*;
-import static org.junit.Assert.*;
+public class MathOperationsTest {
 
-public class MyTestClass {
+    private MathOperations math;
 
     @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-        // Code to set up resources before any of the tests run
-        System.out.println("Executing setUpBeforeClass");
-        // For example, initializing a database connection
+    public static void setUpClass() {
+        System.out.println("Before Class: Setting up the test suite");
     }
 
     @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-        // Code to release resources after all the tests have run
-        System.out.println("Executing tearDownAfterClass");
-        // For example, closing a database connection
+    public static void tearDownClass() {
+        System.out.println("After Class: Tearing down the test suite");
     }
 
     @Before
-    public void setUp() throws Exception {
-        // Code to set up resources before each individual test
-        System.out.println("Executing setUp");
-        // For example, creating a new instance of the class under test
+    public void setUp() {
+        math = new MathOperations();
+        System.out.println("Before: Setting up the test");
     }
 
     @After
-    public void tearDown() throws Exception {
-        // Code to release resources after each individual test
-        System.out.println("Executing tearDown");
-        // For example, nullifying the instance of the class under test
+    public void tearDown() {
+        math = null;
+        System.out.println("After: Tearing down the test");
     }
 
     @Test
-    public void testMethod1() {
-        System.out.println("Executing testMethod1");
-        // Your test code here
-        assertEquals("expected", "actual");
+    public void testAddition() {
+        assertEquals(5, math.add(2, 3));
     }
 
     @Test
-    public void testMethod2() {
-        System.out.println("Executing testMethod2");
-        // Your test code here
-        assertTrue("some condition", true);
+    public void testSubtraction() {
+        assertEquals(1, math.subtract(3, 2));
     }
 
     @Test
-    public void testMethod3() {
-        System.out.println("Executing testMethod3");
-        // Your test code here
-        assertNotNull("object to test");
-    }
-}
-
-
-
-
-[3:51 PM, 6/7/2024] Mohana Bangalan 🤍: public class StringUtils {
-
-    public static String reverse(String input) {
-        if (input == null) {
-            return null;
-        }
-        return new StringBuilder(input).reverse().toString();
-    }
-
-    public static boolean isPalindrome(String input) {
-        if (input == null) {
-            return false;
-        }
-        String reversed = reverse(input);
-        return input.equals(reversed);
-    }
-
-    public static String toUpperCase(String input) {
-        if (input == null) {
-            return null;
-        }
-        return input.toUpperCase();
-    }
-}
-[3:51 PM, 6/7/2024] Mohana Bangalan 🤍: import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import org.junit.jupiter.api.Test;
-
-public class StringUtilsTest {
-
-    @Test
-    public void testReverse() {
-        assertEquals("dcba", StringUtils.reverse("abcd"));
-        assertEquals("54321", StringUtils.reverse("12345"));
-        assertEquals("", StringUtils.reverse(""));
-        assertEquals(null, StringUtils.reverse(null));
+    public void testMultiplication() {
+        assertEquals(6, math.multiply(2, 3));
     }
 
     @Test
-    public void testIsPalindrome() {
-        assertTrue(StringUtils.isPalindrome("racecar"));
-        assertTrue(StringUtils.isPalindrome("madam"));
-        assertFalse(StringUtils.isPalindrome("hello"));
-        assertFalse(StringUtils.isPalindrome("world"));
-        assertFalse(StringUtils.isPalindrome(null));
-        assertTrue(StringUtils.isPalindrome("")); // An empty string is considered a palindrome
-    }
-
-    @Test
-    public void testToUpperCase() {
-        assertEquals("HELLO", StringUtils.toUpperCase("hello"));
-        assertEquals("WORLD", StringUtils.toUpperCase("world"));
-        assertEquals("", StringUtils.toUpperCase(""));
-        assertEquals(null, StringUtils.toUpperCase(null));
+    public void testDivision() {
+        assertEquals(3, math.divide(9, 3));
     }
 }
