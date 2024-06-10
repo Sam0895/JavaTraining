@@ -1,53 +1,58 @@
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+[2:19 PM, 6/10/2024] Sam🤍: public class DatabaseConnectionSingleton {
+    private static DatabaseConnectionSingleton instance;
+    private String connection;
 
-public class MathOperationsTest {
-
-    private MathOperations math;
-
-    @BeforeClass
-    public static void setUpClass() {
-        System.out.println("Before Class: Setting up the test suite");
+    // Private constructor to prevent instantiation from outside
+    private DatabaseConnectionSingleton() {
+        // Initialize database connection here
+        connection = "Connected to the database"; // Placeholder for actual connection
     }
 
-    @AfterClass
-    public static void tearDownClass() {
-        System.out.println("After Class: Tearing down the test suite");
+    // Method to get the singleton instance
+    public static synchronized DatabaseConnectionSingleton getInstance() {
+        if (instance == null) {
+            instance = new DatabaseConnectionSingleton();
+        }
+        return instance;
     }
 
-    @Before
-    public void setUp() {
-        math = new MathOperations();
-        System.out.println("Before: Setting up the test");
+    // Method to get database connection
+    public String getConnection() {
+        return connection;
     }
-
-    @After
-    public void tearDown() {
-        math = null;
-        System.out.println("After: Tearing down the test");
+}
+[2:19 PM, 6/10/2024] Sam🤍: public class ShapeFactory {
+    // Method to create different shapes
+    public static Shape createShape(String shapeType) {
+        if (shapeType.equalsIgnoreCase("Circle")) {
+            return new Circle();
+        } else if (shapeType.equalsIgnoreCase("Square")) {
+            return new Square();
+        } else if (shapeType.equalsIgnoreCase("Rectangle")) {
+            return new Rectangle();
+        } else {
+            throw new IllegalArgumentException("Invalid shape type");
+        }
     }
-
-    @Test
-    public void testAddition() {
-        assertEquals(5, math.add(2, 3));
+}
+[2:19 PM, 6/10/2024] Sam🤍: public interface Shape {
+    String draw();
+}
+[2:19 PM, 6/10/2024] Sam🤍: public class Circle implements Shape {
+    @Override
+    public String draw() {
+        return "Drawing Circle";
     }
-
-    @Test
-    public void testSubtraction() {
-        assertEquals(1, math.subtract(3, 2));
+}
+[2:20 PM, 6/10/2024] Sam🤍: public class Square implements Shape {
+    @Override
+    public String draw() {
+        return "Drawing Square";
     }
-
-    @Test
-    public void testMultiplication() {
-        assertEquals(6, math.multiply(2, 3));
-    }
-
-    @Test
-    public void testDivision() {
-        assertEquals(3, math.divide(9, 3));
+}
+[2:20 PM, 6/10/2024] Sam🤍: public class Rectangle implements Shape {
+    @Override
+    public String draw() {
+        return "Drawing Rectangle";
     }
 }
