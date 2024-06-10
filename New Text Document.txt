@@ -1,58 +1,144 @@
-[2:19 PM, 6/10/2024] Sam🤍: public class DatabaseConnectionSingleton {
-    private static DatabaseConnectionSingleton instance;
-    private String connection;
-
-    // Private constructor to prevent instantiation from outside
-    private DatabaseConnectionSingleton() {
-        // Initialize database connection here
-        connection = "Connected to the database"; // Placeholder for actual connection
-    }
-
-    // Method to get the singleton instance
-    public static synchronized DatabaseConnectionSingleton getInstance() {
+package com.creationaldesignpattern;
+ 
+public class Singleton {
+    private static Singleton instance;
+ 
+    private Singleton() {}
+ 
+    public static Singleton getInstance() {
         if (instance == null) {
-            instance = new DatabaseConnectionSingleton();
+            instance = new Singleton();
         }
         return instance;
     }
-
-    // Method to get database connection
-    public String getConnection() {
-        return connection;
-    }
 }
-[2:19 PM, 6/10/2024] Sam🤍: public class ShapeFactory {
-    // Method to create different shapes
-    public static Shape createShape(String shapeType) {
-        if (shapeType.equalsIgnoreCase("Circle")) {
-            return new Circle();
-        } else if (shapeType.equalsIgnoreCase("Square")) {
-            return new Square();
-        } else if (shapeType.equalsIgnoreCase("Rectangle")) {
-            return new Rectangle();
-        } else {
-            throw new IllegalArgumentException("Invalid shape type");
-        }
-    }
+ 
+[12:38 PM] Maria (Unverified)
+aaa
+[12:54 PM] Maria (Unverified)
+package com.creationaldesignpattern;
+ 
+public class BuilderPattern {
+	static class Coffee {
+		private Coffee(Builder builder) {
+			this.type = builder.type;
+			this.sugar = builder.sugar;
+			this.milk = builder.milk;
+			this.size = builder.size;
+		}
+ 
+		private String type;//Should be a enum Lazy bum
+		private boolean sugar;
+		private boolean milk;
+		private String size;//Should be a enum Lazy bum
+ 
+		public static class Builder {
+			private String type;//Should be a enum Lazy bum
+			private boolean sugar;
+			private boolean milk;
+			private String size;//Should be a enum Lazy bum
+ 
+			public Builder(String type) {
+				this.type = type;
+			}
+ 
+			public Builder sugar(boolean value) {
+				sugar = value;
+				return this;
+			}
+ 
+			public Builder milk(boolean value) {
+				milk = value;
+				return this;
+			}
+ 
+			public Builder size(String value) {
+				size = value;
+				return this;
+			}
+ 
+			public Coffee build() {
+				return new Coffee(this);
+			}
+		}
+ 
+		@Override
+		public String toString() {
+			return String
+					.format("Coffee [type=%s, sugar=%s, milk=%s, size=%s]",
+							type, sugar, milk, size);
+		}
+ 
+	}
+ 
+	public static void main(String[] args) {
+		Coffee coffee = new Coffee.Builder("Mocha").milk(true).sugar(false).size("Large").build();
+		System.out.println(coffee);
+		
+		//Simplifies Creation
+		//More Readable Code
+		//Values cannot be modified
+	}
 }
-[2:19 PM, 6/10/2024] Sam🤍: public interface Shape {
-    String draw();
-}
-[2:19 PM, 6/10/2024] Sam🤍: public class Circle implements Shape {
-    @Override
-    public String draw() {
-        return "Drawing Circle";
-    }
-}
-[2:20 PM, 6/10/2024] Sam🤍: public class Square implements Shape {
-    @Override
-    public String draw() {
-        return "Drawing Square";
-    }
-}
-[2:20 PM, 6/10/2024] Sam🤍: public class Rectangle implements Shape {
-    @Override
-    public String draw() {
-        return "Drawing Rectangle";
-    }
-}
+ 
+[12:55 PM] Maria (Unverified)
+package com.creationaldesignpattern;
+ 
+/*
+* instantiate an object from one among a set of classes based on some logic
+*/
+public class FactoryPattern {
+	public static class PersonFactory {
+		
+		public static Person getPerson(String name,String gender) {
+			if(gender.equalsIgnoreCase("M")){
+				return new Male(name);
+			}else if(gender.equalsIgnoreCase("F")){
+				return new Female(name);
+			} //So on..
+			return null;
+		}
+	}
+ 
+	static abstract class Person {
+		Person(String name){
+			this.name = name;
+		}
+		private String name;
+		abstract String getSalutation();
+		
+		String getNameAndSalutation(){
+			return getSalutation() + " " + name;
+		}
+	}
+	
+	static class Male extends Person{
+		public Male(String name) {
+			super(name);
+		}
+ 
+		@Override
+		String getSalutation() {
+			return "Mr";
+		}
+		
+	}
+	
+	static class Female extends Person{
+		public Female(String name) {
+			super(name);
+		}
+ 
+		@Override
+		String getSalutation() {
+			return "Miss/Mrs";
+		}
+		
+	}
+	
+	public static void main(String[] args) {
+		Person male = PersonFactory.getPerson("Robinhood","M");
+		System.out.println(male.getNameAndSalutation());//Mr
+		Person female = PersonFactory.getPerson("Mary","F");
+		System.out.println(female.getNameAndSalutation());//Miss/Mrs
+	}}
