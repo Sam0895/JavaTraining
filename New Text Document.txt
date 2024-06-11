@@ -1,75 +1,195 @@
-[4:26 PM] Maria (Unverified)
-package com.structuraldesignpattern;
- 
-interface Subject {
-    void request();
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
 }
- 
-class RealSubject implements Subject {
-    public void request() {
-        System.out.println("RealSubject request");
-    }
+
+.navbar {
+    background-color: #333;
 }
- 
-public class Proxy implements Subject {
-    private RealSubject realSubject;
- 
-    public void request() {
-        if (realSubject == null) {
-            realSubject = new RealSubject();
+
+.navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar li {
+    display: inline;
+}
+
+.navbar li a {
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+.navbar li a:hover {
+    background-color: #555;
+}
+
+.section {
+    padding: 20px;
+}
+
+.section:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Bar</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="navbar">
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </div>
+
+    <div id="home" class="section">
+        <h2>Home Section</h2>
+        <p>Welcome to our website!</p>
+    </div>
+
+    <div id="about" class="section">
+        <h2>About Section</h2>
+        <p>Learn more about us.</p>
+    </div>
+
+    <div id="services" class="section">
+        <h2>Services Section</h2>
+        <p>Explore our services.</p>
+    </div>
+
+    <div id="contact" class="section">
+        <h2>Contact Section</h2>
+        <p>Get in touch with us.</p>
+    </div>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple HTML Page</title>
+    <style>
+        /* CSS styles go here */
+        table {
+            border-collapse: collapse;
+            width: 100%;
         }
-        realSubject.request();
-    }
-}
- 
-[4:26 PM] Maria (Unverified)
-aaaa
-[4:27 PM] Maria (Unverified)
-package com.behavioralpatterns;
- 
-/*
-* Separates Strategy - how you do something - into a separate class.
-* Allows easy change of strategy at a later point.
-*/
-public class StrategyPattern {
-	interface Sortable {
-		public int[] sort(int[] numbers);
-	}
- 
-	static class BubbleSort implements Sortable {
-		public int[] sort(int[] numbers) {
-			// Ideally the bubble sort is implemented completely here
-			return numbers;
-		}
-	}
- 
-	static class QuickSort implements Sortable {
-		@Override
-		public int[] sort(int[] numbers) {
-			// Ideally the quick sort is implemented completely here
-			return numbers;
-		}
-	}
- 
-	static class ComplexClass {
-		Sortable sorter;
- 
-		ComplexClass(Sortable sorter) {
-			this.sorter = sorter;
-		}
- 
-		void doAComplexThing() {
-			int[] values = null; // get from somewhere..
-			// ..logic..
-			sorter.sort(values);
-			// ..logic..
-		}
-	}
- 
-	public static void main(String[] args) {
-		ComplexClass complexClassInstance = new ComplexClass(new BubbleSort());
-		// This can also be a setter..
-		complexClassInstance.doAComplexThing();
-	}
-}
- 
+        
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        
+        th {
+            background-color: #f2f2f2;
+        }
+        
+        form {
+            margin-top: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+        }
+        
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+        }
+        
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to My Website</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <section id="about">
+        <h2>About Us</h2>
+        <article>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum quis ullamcorper magna. Integer euismod lacinia ipsum, nec lacinia ligula aliquet ac.</p>
+        </article>
+    </section>
+
+    <section id="services">
+        <h2>Our Services</h2>
+        <article>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer id aliquet mauris, at rutrum velit.</p>
+        </article>
+    </section>
+
+    <section id="contact">
+        <h2>Contact Us</h2>
+        <article>
+            <p>Feel free to contact us for any inquiries or feedback.</p>
+            <table>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                </tr>
+                <tr>
+                    <td>John Doe</td>
+                    <td>john@example.com</td>
+                </tr>
+                <tr>
+                    <td>Jane Smith</td>
+                    <td>jane@example.com</td>
+                </tr>
+            </table>
+            <form action="#" method="post">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+                
+                <input type="submit" value="Submit">
+            </form>
+        </article>
+    </section>
+
+    <footer>
+        <p>&copy; 2024 My Website. All rights reserved.</p>
+    </footer>
+</body>
+</html>
