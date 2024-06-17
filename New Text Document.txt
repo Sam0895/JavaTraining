@@ -1,141 +1,146 @@
-<!-- registration.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Registration</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <form id="registrationForm">
-        <h2>Registration</h2>
-        <label for="username">Username:</label>
-        <input type="text" id="username" required>
-        <label for="email">Email:</label>
-        <input type="email" id="email" required>
-        <label for="password">Password:</label>
-        <input type="password" id="password" required>
-        <button type="submit">Register</button>
-    </form>
-    <script src="script.js"></script>
-</body>
-</html>
+public class LibraryManagementSystem {
+    public static void main(String[] args) {
+        Library library = new Library();
 
+        // Adding books to the library
+        library.addBook(new Book("The Great Gatsby", "F. Scott Fitzgerald", "9780743273565"));
+        library.addBook(new Book("1984", "George Orwell", "9780451524935"));
+        library.addBook(new Book("To Kill a Mockingbird", "Harper Lee", "9780061120084"));
 
---------
+        // Display all books
+        System.out.println("All books in the library:");
+        library.displayAllBooks();
 
-<!-- login.html -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Login</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <form id="loginForm">
-        <h2>Login</h2>
-        <label for="username">Username/Email:</label>
-        <input type="text" id="username" required>
-        <label for="password">Password:</label>
-        <input type="password" id="password" required>
-        <button type="submit">Login</button>
-    </form>
-    <script src="script.js"></script>
-</body>
-</html>
+        // Linear Search
+        String searchTitle = "1984";
+        Book foundBookLinear = library.linearSearch(searchTitle);
+        System.out.println("\nLinear Search - Book found: " + foundBookLinear);
 
+        // Binary Search
+        Book foundBookBinary = library.binarySearch(searchTitle);
+        System.out.println("\nBinary Search - Book found: " + foundBookBinary);
 
---------
+        // Compare search performance - linear & binary (simple demonstration)
+        long startTime = System.nanoTime();
+        library.linearSearch(searchTitle);
+        long endTime = System.nanoTime();
+        System.out.println("\nLinear Search Time: " + (endTime - startTime) + " ns");
 
-/* styles.css */
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+        startTime = System.nanoTime();
+        library.binarySearch(searchTitle);
+        endTime = System.nanoTime();
+        System.out.println("Binary Search Time: " + (endTime - startTime) + " ns");
+    }
 }
 
-form {
-    max-width: 400px;
-    margin: 0 auto;
-    padding: 20px;
-    background-color: #fff;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-h2 {
-    margin-bottom: 20px;
-    text-align: center;
-}
+public class Library {
+    private List<Book> books;
 
-label {
-    display: block;
-    margin-bottom: 8px;
-}
-
-input[type="text"],
-input[type="email"],
-input[type="password"],
-button {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-button {
-    background-color: #007bff;
-    color: #fff;
-    cursor: pointer;
-}
-
-button:hover {
-    background-color: #0056b3;
-}
-
-.error {
-    color: red;
-}
-
-
--------
-
-// script.js
-const registrationForm = document.getElementById('registrationForm');
-const loginForm = document.getElementById('loginForm');
-
-registrationForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-    const username = document.getElementById('username').value;
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    if (!username || !email || !password) {
-        alert('Please fill in all fields');
-        return;
+    public Library() {
+        books = new ArrayList<>();
     }
 
-    // Additional validation logic here
-
-    // If all validations pass, you can proceed with registration
-    console.log('Registration successful');
-});
-
-loginForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-    const username = document.getElementById('username').value;
-    const password = document.getElementById('password').value;
-
-    if (!username || !password) {
-        alert('Please fill in all fields');
-        return;
+    // Add a book to the library and keep the list sorted
+    public void addBook(Book book) {
+        books.add(book);
+        Collections.sort(books);
     }
 
-    // Additional validation logic here
+    // Remove a book from the library
+    public void removeBook(Book book) {
+        books.remove(book);
+    }
 
-    // If all validations pass, you can proceed with login
-    console.log('Login successful');
-});
+    // Display all books in the library
+    public void displayAllBooks() {
+        for (Book book : books) {
+            System.out.println(book);
+        }
+    }
+
+    // Linear Search for a book by title
+    public Book linearSearch(String title) {
+        for (Book book : books) {
+            if (book.getTitle().equalsIgnoreCase(title)) {
+                return book;
+            }
+        }
+        return null;
+    }
+
+    // Binary Search for a book by title
+    public Book binarySearch(String title) {
+        int left = 0;
+        int right = books.size() - 1;
+
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            Book midBook = books.get(mid);
+            int comparison = midBook.getTitle().compareToIgnoreCase(title);
+
+            if (comparison == 0) {
+                return midBook;
+            } else if (comparison < 0) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+        return null;
+    }
+}
+
+public class Book implements Comparable<Book> {
+    private String title;
+    private String author;
+    private String ISBN;
+
+    // Constructor
+    public Book(String title, String author, String ISBN) {
+        this.title = title;
+        this.author = author;
+        this.ISBN = ISBN;
+    }
+
+    // Getters
+    public String getTitle() {
+        return title;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public String getISBN() {
+        return ISBN;
+    }
+
+    // Setters
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public void setISBN(String ISBN) {
+        this.ISBN = ISBN;
+    }
+
+    // compareTo method for sorting by title
+    @Override
+    public int compareTo(Book other) {
+        return this.title.compareTo(other.title);
+    }
+
+    // toString method for display
+    @Override
+    public String toString() {
+        return "Title: " + title + ", Author: " + author + ", ISBN: " + ISBN;
+    }
+}
