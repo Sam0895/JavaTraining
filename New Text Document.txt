@@ -1,146 +1,125 @@
-public class LibraryManagementSystem {
+import java.util.LinkedList;
+
+public class ShoppingCart {
+    private LinkedList<String> cart;
+
+    public ShoppingCart() {
+        cart = new LinkedList<>();
+    }
+
+    // Add item to the cart
+    public void addItem(String item) {
+        cart.add(item);
+    }
+
+    // Remove item from the cart
+    public void removeItem(String item) {
+        cart.remove(item);
+    }
+
+    // View all items in the cart
+    public void viewCart() {
+        System.out.println("Shopping Cart Items:");
+        for (String item : cart) {
+            System.out.println(item);
+        }
+    }
+
+    // Get the current cart (for saving to purchase history)
+    public LinkedList<String> getCart() {
+        return new LinkedList<>(cart);
+    }
+
+    // Clear the cart (for checkout)
+    public void clearCart() {
+        cart.clear();
+    }
+}
+
+import java.util.Stack;
+import java.util.LinkedList;
+
+public class PurchaseHistory {
+    private Stack<LinkedList<String>> history;
+
+    public PurchaseHistory() {
+        history = new Stack<>();
+    }
+
+    // Save the current cart to purchase history
+    public void savePurchase(LinkedList<String> cart) {
+        history.push(cart);
+    }
+
+    // Undo the last purchase
+    public LinkedList<String> undoLastPurchase() {
+        if (!history.isEmpty()) {
+            return history.pop();
+        }
+        return null;
+    }
+
+    // View the entire purchase history
+    public void viewHistory() {
+        System.out.println("Purchase History:");
+        for (LinkedList<String> cart : history) {
+            System.out.println(cart);
+        }
+    }
+}
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class CustomerService {
+    private Queue<String> serviceRequests;
+
+    public CustomerService() {
+        serviceRequests = new LinkedList<>();
+    }
+
+    // Add a customer service request
+    public void addRequest(String request) {
+        serviceRequests.add(request);
+    }
+
+    // Process the next customer service request
+    public String processNextRequest() {
+        return serviceRequests.poll();
+    }
+
+    // View pending customer service requests
+    public void viewPendingRequests() {
+        System.out.println("Pending Customer Service Requests:");
+        for (String request : serviceRequests) {
+            System.out.println(request);
+        }
+    }
+}
+
+public class ShoppingApp {
     public static void main(String[] args) {
-        Library library = new Library();
+        ShoppingCart cart = new ShoppingCart();
+        PurchaseHistory history = new PurchaseHistory();
+        CustomerService service = new CustomerService();
 
-        // Adding books to the library
-        library.addBook(new Book("The Great Gatsby", "F. Scott Fitzgerald", "9780743273565"));
-        library.addBook(new Book("1984", "George Orwell", "9780451524935"));
-        library.addBook(new Book("To Kill a Mockingbird", "Harper Lee", "9780061120084"));
+        // Shopping cart operations
+        cart.addItem("Laptop");
+        cart.addItem("Smartphone");
+        cart.viewCart();
+        
+        // Purchase history operations
+        history.savePurchase(cart.getCart());
+        cart.clearCart();
+        cart.viewCart(); // Should be empty after clearing
+        history.viewHistory();
 
-        // Display all books
-        System.out.println("All books in the library:");
-        library.displayAllBooks();
-
-        // Linear Search
-        String searchTitle = "1984";
-        Book foundBookLinear = library.linearSearch(searchTitle);
-        System.out.println("\nLinear Search - Book found: " + foundBookLinear);
-
-        // Binary Search
-        Book foundBookBinary = library.binarySearch(searchTitle);
-        System.out.println("\nBinary Search - Book found: " + foundBookBinary);
-
-        // Compare search performance - linear & binary (simple demonstration)
-        long startTime = System.nanoTime();
-        library.linearSearch(searchTitle);
-        long endTime = System.nanoTime();
-        System.out.println("\nLinear Search Time: " + (endTime - startTime) + " ns");
-
-        startTime = System.nanoTime();
-        library.binarySearch(searchTitle);
-        endTime = System.nanoTime();
-        System.out.println("Binary Search Time: " + (endTime - startTime) + " ns");
-    }
-}
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
-public class Library {
-    private List<Book> books;
-
-    public Library() {
-        books = new ArrayList<>();
-    }
-
-    // Add a book to the library and keep the list sorted
-    public void addBook(Book book) {
-        books.add(book);
-        Collections.sort(books);
-    }
-
-    // Remove a book from the library
-    public void removeBook(Book book) {
-        books.remove(book);
-    }
-
-    // Display all books in the library
-    public void displayAllBooks() {
-        for (Book book : books) {
-            System.out.println(book);
-        }
-    }
-
-    // Linear Search for a book by title
-    public Book linearSearch(String title) {
-        for (Book book : books) {
-            if (book.getTitle().equalsIgnoreCase(title)) {
-                return book;
-            }
-        }
-        return null;
-    }
-
-    // Binary Search for a book by title
-    public Book binarySearch(String title) {
-        int left = 0;
-        int right = books.size() - 1;
-
-        while (left <= right) {
-            int mid = (left + right) / 2;
-            Book midBook = books.get(mid);
-            int comparison = midBook.getTitle().compareToIgnoreCase(title);
-
-            if (comparison == 0) {
-                return midBook;
-            } else if (comparison < 0) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-        return null;
-    }
-}
-
-public class Book implements Comparable<Book> {
-    private String title;
-    private String author;
-    private String ISBN;
-
-    // Constructor
-    public Book(String title, String author, String ISBN) {
-        this.title = title;
-        this.author = author;
-        this.ISBN = ISBN;
-    }
-
-    // Getters
-    public String getTitle() {
-        return title;
-    }
-
-    public String getAuthor() {
-        return author;
-    }
-
-    public String getISBN() {
-        return ISBN;
-    }
-
-    // Setters
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-    public void setISBN(String ISBN) {
-        this.ISBN = ISBN;
-    }
-
-    // compareTo method for sorting by title
-    @Override
-    public int compareTo(Book other) {
-        return this.title.compareTo(other.title);
-    }
-
-    // toString method for display
-    @Override
-    public String toString() {
-        return "Title: " + title + ", Author: " + author + ", ISBN: " + ISBN;
+        // Customer service operations
+        service.addRequest("Refund for order #1234");
+        service.addRequest("Issue with product quality");
+        service.viewPendingRequests();
+        String processedRequest = service.processNextRequest();
+        System.out.println("Processed Request: " + processedRequest);
+        service.viewPendingRequests();
     }
 }
