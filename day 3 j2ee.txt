@@ -1,0 +1,98 @@
+package com.example.servlets;
+
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/SubmitClaimServlet")
+public class SubmitClaimServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
+    
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Retrieve form data
+        String claimantName = request.getParameter("claimantName");
+        String claimDetails = request.getParameter("claimDetails");
+        
+        // Validate form data (you can add more validation as needed)
+        if (claimantName == null || claimantName.trim().isEmpty() ||
+            claimDetails == null || claimDetails.trim().isEmpty()) {
+            // Handle validation failure (redirect to error page or show error message)
+            response.sendRedirect("error.jsp");
+            return;
+        }
+        
+        // For simplicity, print the claim details
+        System.out.println("Claimant Name: " + claimantName);
+        System.out.println("Claim Details: " + claimDetails);
+        
+        // Redirect to success page
+        response.sendRedirect("success.jsp");
+    }
+}
+
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Claim Submission</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h2>Claim Submission</h2>
+  <form action="SubmitClaimServlet" method="post">
+    <label for="claimantName">Claimant Name:</label>
+    <input type="text" id="claimantName" name="claimantName" required>
+    <br>
+    <label for="claimDetails">Claim Details:</label>
+    <textarea id="claimDetails" name="claimDetails" rows="4" required></textarea>
+    <br>
+    <button type="submit">Submit Claim</button>
+  </form>
+</body>
+</html>
+
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Claim Submission Success</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h2>Claim Submitted Successfully</h2>
+  <p>Your claim has been successfully submitted.</p>
+</body>
+</html>
+
+
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Error</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h2>Error</h2>
+  <p>There was an error processing your claim submission. Please try again.</p>
+</body>
+</html>
+
+
+--------
+
+claim.jsp: JSP page for entering claim information.
+success.jsp: JSP page for displaying success message.
+error.jsp: JSP page for displaying error message.
+styles.css: CSS file for styling the JSP pages.
