@@ -164,3 +164,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initial render of the policy table
     renderPolicyTable();
 });
+----
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.list-group-item {
+    cursor: pointer;
+}
+
+.table th {
+    cursor: pointer;
+}
