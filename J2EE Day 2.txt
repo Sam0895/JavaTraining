@@ -4,125 +4,163 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Policy Management Dashboard</title>
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="styles.css" rel="stylesheet"> <!-- Custom styles if any -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="dashboard.css">
 </head>
 <body>
     <div class="container-fluid">
-        <div class="row">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">CodeX Dashboard</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Policies</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Logout</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <div class="row mt-4">
             <div class="col-md-3">
-                <!-- Sidebar -->
-                <div class="sidebar">
-                    <h4>Dashboard Menu</h4>
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link active" href="#policies">Policies</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#clients">Clients</a>
-                        </li>
-                        <!-- Add more sidebar items as needed -->
-                    </ul>
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action active" data-toggle="list" role="tab">Overview</a>
+                    <a href="#" class="list-group-item list-group-item-action" data-toggle="list" role="tab">Manage Policies</a>
+                    <a href="#" class="list-group-item list-group-item-action" data-toggle="list" role="tab">Reports</a>
                 </div>
             </div>
             <div class="col-md-9">
-                <!-- Main content area -->
-                <div class="content">
-                    <h2>Welcome to Policy Management Dashboard</h2>
-                    <!-- Content dynamically loaded based on sidebar link clicks -->
-                    <div id="policies">
-                        <h3>Policy Information</h3>
-                        <!-- Display policies -->
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="overview" role="tabpanel">
+                        <h3>Overview</h3>
+                        <p>Summary and statistics of policies.</p>
                     </div>
-                    <div id="clients" style="display: none;">
-                        <h3>Client Information</h3>
-                        <!-- Display client information -->
+                    <div class="tab-pane fade" id="manage-policies" role="tabpanel">
+                        <h3>Manage Policies</h3>
+                        <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addPolicyModal">Add New Policy</button>
+                        <div id="policyTableContainer">
+                            <!-- Policy table will be dynamically inserted here -->
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="reports" role="tabpanel">
+                        <h3>Reports</h3>
+                        <p>Generate and view reports.</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Bootstrap JS and dependencies -->
+    <!-- Add Policy Modal -->
+    <div class="modal fade" id="addPolicyModal" tabindex="-1" aria-labelledby="addPolicyModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addPolicyModalLabel">Add New Policy</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addPolicyForm">
+                        <div class="form-group">
+                            <label for="policyName">Policy Name</label>
+                            <input type="text" class="form-control" id="policyName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="policyDetails">Policy Details</label>
+                            <textarea class="form-control" id="policyDetails" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="policyType">Policy Type</label>
+                            <select class="form-control" id="policyType" required>
+                                <option value="">Select...</option>
+                                <option value="type1">Type 1</option>
+                                <option value="type2">Type 2</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Add Policy</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-    <!-- Custom JavaScript for interactivity -->
-    <script src="scripts.js"></script> <!-- Your custom scripts -->
+    <script src="dashboard.js"></script>
 </body>
 </html>
+----
 
--------
-
-<!-- Modal for Policy Details -->
-<div class="modal fade" id="policyModal" tabindex="-1" role="dialog" aria-labelledby="policyModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="policyModalLabel">Policy Details</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <!-- Policy details content dynamically loaded here -->
-        <p>Policy Number: <span id="policyNumber"></span></p>
-        <p>Policy Holder: <span id="policyHolder"></span></p>
-        <!-- Add more details as needed -->
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
-
------
-
-// Sort policies by policy number
-function sortPolicies() {
-    // Example sorting logic
-    // Replace with your actual sorting logic
-    let policies = document.querySelectorAll('.policy');
-    policies = Array.from(policies);
-    policies.sort((a, b) => {
-        let aNum = parseInt(a.dataset.policyNumber);
-        let bNum = parseInt(b.dataset.policyNumber);
-        return aNum - bNum;
-    });
-
-    // Clear current display
-    let container = document.getElementById('policies');
-    container.innerHTML = '';
-
-    // Append sorted policies
-    policies.forEach(policy => {
-        container.appendChild(policy);
-    });
-}
-
-// Display policy details in modal
-function showPolicyDetails(policyNumber, policyHolder) {
-    // Example: Display details in modal
-    document.getElementById('policyNumber').textContent = policyNumber;
-    document.getElementById('policyHolder').textContent = policyHolder;
-    $('#policyModal').modal('show'); // Bootstrap modal display
-}
-
-// Example usage: Listen for document load
 document.addEventListener('DOMContentLoaded', function() {
-    // Add event listener for sorting button
-    document.getElementById('sortButton').addEventListener('click', sortPolicies);
+    const policyTableContainer = document.getElementById('policyTableContainer');
+    const addPolicyForm = document.getElementById('addPolicyForm');
 
-    // Add event listener for policy detail click
-    let policies = document.querySelectorAll('.policy');
-    policies.forEach(policy => {
-        policy.addEventListener('click', function() {
-            let policyNumber = this.dataset.policyNumber;
-            let policyHolder = this.dataset.policyHolder;
-            showPolicyDetails(policyNumber, policyHolder);
+    // Sample data for policies
+    let policies = [
+        { name: 'Policy 1', details: 'Details of Policy 1', type: 'Type 1' },
+        { name: 'Policy 2', details: 'Details of Policy 2', type: 'Type 2' }
+    ];
+
+    // Function to render policy table
+    function renderPolicyTable() {
+        let tableHTML = `
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th onclick="sortPolicies('name')">Name</th>
+                        <th>Details</th>
+                        <th onclick="sortPolicies('type')">Type</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
+
+        policies.forEach(policy => {
+            tableHTML += `
+                <tr>
+                    <td>${policy.name}</td>
+                    <td>${policy.details}</td>
+                    <td>${policy.type}</td>
+                </tr>
+            `;
         });
+
+        tableHTML += `</tbody></table>`;
+        policyTableContainer.innerHTML = tableHTML;
+    }
+
+    // Function to sort policies
+    function sortPolicies(key) {
+        policies.sort((a, b) => (a[key] > b[key]) ? 1 : -1);
+        renderPolicyTable();
+    }
+
+    // Add new policy
+    addPolicyForm.addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const policyName = document.getElementById('policyName').value;
+        const policyDetails = document.getElementById('policyDetails').value;
+        const policyType = document.getElementById('policyType').value;
+
+        policies.push({ name: policyName, details: policyDetails, type: policyType });
+        renderPolicyTable();
+
+        $('#addPolicyModal').modal('hide');
+        addPolicyForm.reset();
     });
+
+    // Initial render of the policy table
+    renderPolicyTable();
 });
